@@ -1,21 +1,31 @@
 <?php
 
+$showAlert=false;
+$showError=false;
     if($_SERVER["REQUEST_METHOD"]=="POST"){
-        $showAlert=false;
-        $showError=false;
         include 'partials/_dpconnect.php';
         $username=$_POST['username'];
         $password=$_POST['password'];
         $cpassword=$_POST['cpassword'];
-        $exists=false;
-        if(($password==$cpassword) && $exists==false){
-            $sql="insert into users(username,password) values('$username','$password')";
-            $result=mysqli_query($conn,$sql);
-            if($result){
-                $showAlert=true;
-            }
+        // $exists=false;
+        //check whether this username exists
+        $existSql="select *from users where username='$username';";
+        $result=mysqli_query($conn,$existSql);
+        $numExistRows=mysqli_num_rows($result);
+        if($numExistRows>0){
+          // $exists=true
+          $showError="Username Already Exists";
         }else{
-            $showError="password do not match";
+          // $exists=false;
+          if(($password==$cpassword) && $exists==false){
+              $sql="insert into users(username,password) values('$username','$password')";
+              $result=mysqli_query($conn,$sql);
+              if($result){
+                  $showAlert=true;
+              }
+          }else{
+              $showError="password do not match";
+          }
         }
     }
     
@@ -67,11 +77,11 @@
     <form action="signup.php" method="post">
   <div class="form-group ">
     <label for="username">Username</label>
-    <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter Username">
+    <input type="text" maxlength="11" class="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter Username">
 </div>
 <div class="form-group">
     <label for="password">Password</label>
-    <input type="password" class="form-control" id="password" name ="password" placeholder="Password">
+    <input type="password" maxlength="23" class="form-control" id="password" name ="password" placeholder="Password">
 </div>
 <div class="form-group">
     <label for="cpassword">Confirm Password</label>

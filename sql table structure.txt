@@ -1,0 +1,6 @@
+create table users (
+	sno int auto_increment primary key,
+	username varchar(11)  unique,
+	password varchar(23),
+	dt datetime default (current_timestampe())
+)engine=innodb;
